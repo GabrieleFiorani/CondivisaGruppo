@@ -21,6 +21,8 @@ int sum_submatrix( int **matrix, int n){
     return subTot;
 }
 
+
+
 int main(){
     //*grandezza matrici
     int m, n;

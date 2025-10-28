@@ -16,6 +16,19 @@ int** invertiDiag(int** a, int size){
     return a;
 }
 
+//*stampa mat invertita
+void print_subMat(int** matrix, int M){
+    int i, j;
+    for(i = 0; i < M; i++){
+        for(j = 0; j < M; j++){
+            printf("%d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+    return;
+}
+
+
 int main(){
 
     int M;
@@ -40,14 +53,8 @@ int main(){
 
 
     int** ris = invertiDiag(mat, M);
-
-    //*stampa mat invertita
-    for(i = 0; i < M; i++){
-        for(j = 0; j < M; j++){
-            printf("%d ", ris[i][j]);
-        }
-        printf("\n");
-    }
+    
+    print_subMat(ris, M);
 
     //*libera memoria
     for(i = 0; i < M; i++){
