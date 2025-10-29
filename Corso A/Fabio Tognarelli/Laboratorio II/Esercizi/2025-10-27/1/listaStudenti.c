@@ -9,19 +9,19 @@ typedef struct Studente{
 
 
 //*STAMPA Studente
-void print_list(Studente **head){
-    if(*head == NULL){
+void print_list(Studente *head){
+    if(head == NULL){
         return;
     }
-    printf("Matricola:  %d; Eta': %d\n", *head->mat, *head->eta);
-    print_list(*head->next);
+    printf("Matricola:  %d; Eta': %d\n", head->mat, head->eta);
+    print_list(head->next);
 }
 
 //*ADD STUDENTE IN CODA 
 void insert(int matricola, int eta, Studente **head){
     Studente *nuovo, *att;
 
-    att = *head;   //*inizializzazione nuovo nodo e nodi per scorrere la lista
+    att = *head;   //*inizializzazione nuovo nodo per scorrere la lista
     nuovo = (Studente*)malloc(sizeof(Studente));
     if(nuovo == NULL)   //*controllo corretta allocazione heap
         exit(1);
@@ -31,6 +31,7 @@ void insert(int matricola, int eta, Studente **head){
 
     if(*head == NULL){     //*Studente vuota
         *head = nuovo;
+        nuovo->next = NULL;
     }else{
         while(att->next != NULL){ //*scorrere la Studente
             att = att->next;
@@ -41,8 +42,9 @@ void insert(int matricola, int eta, Studente **head){
     return;
 }
 
+
 //*ORDINA IN MODO CRESCENTE PER ETA'  
-void ordina(Lista *head){
+void ordina(Studente **head){
     Studente *primo, *secondo;
 
     primo = NULL;
@@ -53,20 +55,25 @@ void ordina(Lista *head){
         return;
     }
 
-    do{         //*sort 
-        primo = secondo;
-        do{
-            secondo = secondo->next;
-            if(secondo->eta < primo->eta){
-                int tmpMat = primo->mat; 
+    //*sort 
+    int scambiato;
+    do{                 //*finche' ho uno scambio nel ciclo riparto da capo
+        scambiato = 0;
+        primo = *head;
+        while(primo->next != NULL){     //*ciclo di confronti via viA
+            secondo = primo->next;    //*scorro secondo e lo comparo con il primo
+            if(primo->eta > secondo->eta){      //*scambio nodi
+                int tmpMat = primo->mat;
                 int tmpEta = primo->eta;
                 primo->mat = secondo->mat;
                 primo->eta = secondo->eta;
                 secondo->mat = tmpMat;
                 secondo->eta = tmpEta;
+                scambiato = 1;
             }
-        } while(secondo != NULL);
-    } while(primo != NULL);
+            primo = primo->next;    
+        }
+    }while(scambiato)  
 }
 
 
@@ -85,13 +92,16 @@ Studente *estrai(int e, Studente *head){
     return nuovaLista;
 }
 
+//*LIBERA MEMORIA
 void liberaMem(Studente **head){
     Studente *tmp;
-    while((*head)->next != NULL){
+    while((*head) != NULL){
         tmp = *head;
         *head = (*head)->next;
         free(tmp);
     }
 }
 
-int main(){*}
+int main(){
+    return 0;
+}

@@ -34,12 +34,12 @@ void insertStudente(int matricola, int eta, Studente** root){
 }
 
 //* STAMPA TREE CON ETA' CRESCENTE
-void printTree(Studente **root){
-    if(*root == NULL)
+void printTree(Studente *root){
+    if(root == NULL)
         return;
-    printTree(&((*root)->sx));
-    printf("%d\n", (*root)->eta);
-    printTree(&((*root)->dx));
+    printTree(root->sx);
+    printf("%d\n", root->eta);
+    printTree(root->dx);
 }
 
 //*STAMPA studenti di una certa eta' dell'albero
@@ -48,19 +48,19 @@ void stampaStudenti(int eta, Studente *root){
         return;
     }
     stampaStudenti(eta, root->sx);
-    if(root->eta = eta)
+    if(root->eta == eta)
         printf("Matricola: %d; Eta': %d\n", root->mat, root->eta);
     stampaStudenti(eta, root->dx);
     
 }
 
 //* SVUOTA LA MEMORIA
-void liberaTree(Studente* root){
-    if(root == NULL)
+void liberaTree(Studente** root){
+    if(*root == NULL)
         return;
-    liberaTree(root->sx);
-    liberaTree(root->dx);
-    free(root);
+    liberaTree((&(*root)->sx));
+    liberaTree((&(*root)->dx));
+    free(*root);
 }
 
 
@@ -80,15 +80,15 @@ int main(){
     }
 
     //*stampa tree in modo crescente
-    printTree(&root);
+    printTree(root);
 
     //*stampa studenti selezionati
     printf("Inserire eta' studenti da stampare dall'albero: ");
     scanf("%d", &val);
-    stampaStudenti(val, root);
+    stampaStudenti(root, val);
 
     //*Libera memoria
-    liberaTree(root);
+    liberaTree(&root);
     
     return 0;
 }
