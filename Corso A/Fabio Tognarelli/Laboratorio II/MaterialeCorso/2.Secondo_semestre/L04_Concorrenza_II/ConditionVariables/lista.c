@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdatomic.h>
-
+//* implementazione della lista su cui si appoggiano consumatori e produttori
 #include "lista.h"
 
+
+//* inserisce in coda un nuovo nodo
 void push(lista_t *lista, int value) {
 	nodo_lista_t *nodo = malloc(sizeof(nodo_lista_t));
 	nodo->value = value;
@@ -20,8 +22,9 @@ void push(lista_t *lista, int value) {
 	lista->numero_elementi++;
 }
 
+//* eliminina in testa un nodo
 int pop(lista_t *lista) {
-	if (lista->head == NULL) {
+	if (lista->head == NULL) {	//lista vuota
 		return -1;
 	}
 
@@ -39,12 +42,13 @@ int pop(lista_t *lista) {
 	return value;
 }
 
+//* elimina un nodo da qualsiasi punto della coda
 void pop_selettiva(lista_t *lista, int value) {
 	nodo_lista_t *nodo = lista->head;
 	nodo_lista_t *precedente = NULL;
 
-	while (nodo != NULL) {
-		if (nodo->value == value) {
+	while (nodo != NULL) {			//finche' ci sono elementi in lista
+		if (nodo->value == value) {		
 			if (precedente == NULL) {
 				lista->head = nodo->prossimo;
 			} else {
@@ -62,6 +66,7 @@ void pop_selettiva(lista_t *lista, int value) {
 	}
 }
 
+//* scorre e stampa la lista
 void stampa_lista(lista_t *lista) {
 	nodo_lista_t *nodo = lista->head;
 

@@ -1,3 +1,12 @@
+/**
+ ** SPINLOCK:
+ ** 	meccanismo che permette sincronizzazione atomica dei thread in aree più
+ **		strutturate e complesse di semplici operazioni su variabili.
+ **	FUNZIONAMENTO:
+ **		quando un thread prende il lock del blocco di codice critico, i successivi 
+ ** 	thread restano in attesa chiedendo ciclicamente di ottenere l'accesso alla 
+ ** 	risorsa critica.
+ */
 #include <stdio.h>
 #include <threads.h>
 #include <stdatomic.h>

@@ -8,6 +8,7 @@
 
 #define MAX_THREADS 700
 
+//#define SPINLOCK_VERSION
 #define MUTEX_VERSION
 
 #ifdef MUTEX_VERSION

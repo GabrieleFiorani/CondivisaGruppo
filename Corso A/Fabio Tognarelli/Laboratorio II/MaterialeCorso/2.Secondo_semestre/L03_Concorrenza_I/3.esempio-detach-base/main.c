@@ -1,3 +1,21 @@
+/**
+ * * DETATCH: quando un thread muore non scompare del tutto, ma viene "zombieficato":
+ * * viene tenuto in memoria il suo stack ed il valore di ritorno, occupando spazio in 
+ * * attesa che un altro thread (spesso il main thread) chiami la join su di lui per
+ * * leggere il risultato e farlo scomparire del tutto. 
+ * * ------------------------------------------------------------------------------
+ * * thrd_detach(thread_id):
+ * * 	Stai dicendo al Sistema Operativo: "questo thread deve fare un lavoro in
+ * *	background. Non mi interessa sapere quando finirà e nemmeno del valore che 
+ * * 	ritornerà. Appena ha finito, distruggi tutto in automatico e libera memoria 
+ * * 	senza aspettare nessuno".
+ * * ------------------------------------------
+ * ? TIPS: 
+ * ? 	- La detach su un thread è irreversibile
+ * ? 	- La detach può essere fatta anche da un thread per conto suo: 
+ * ? 		thrd_detach(thrd_current())
+*/
+
 #include <stdio.h>
 #include <threads.h>
 #include <stdbool.h>
@@ -31,18 +49,16 @@ int main()
 		);
 
 		printf("Thread %lu creato.\n", threads[i]);
+		//? funzione per svuotare il buffer di output e scrivere sul dispositivo di output
 		fflush(stdout);
-
-		thrd_detach(threads[i]);	// imposta il thread come detached
-									// il thread non deve essere esplicitamente 
-									// terminato il sistema operativo si occupa 
-									// di liberare le risorse allocate
+		// imposta il thread come detached; il thread non deve essere esplicitamente terminato; il sistema operativo si occupa di liberare le risorse allocate
+		thrd_detach(threads[i]);	
 	}
 
 	for (int i = 0; i < N; i++)
 	{
 		int ret = thrd_join(threads[i], NULL);	// attende la terminazione del thread i
-		if (ret == thrd_success)				// verifica il risultato del join
+		if (ret == thrd_success)				//! join che falliranno poichè detached
 			printf("Thread %lu terminato correttamente.\n", threads[i]); 	
 		else
 			printf("Errore nel join del thread %lu\n", threads[i]);

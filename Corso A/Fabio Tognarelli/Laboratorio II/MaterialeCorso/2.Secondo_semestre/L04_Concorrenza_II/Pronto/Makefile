@@ -8,11 +8,6 @@ OBJS = $(NAME).o lista.o spinlock.o
 
 default: $(NAME)
 
-%.o: %.c
-	$(CC) -c $(CFLAGS) $< -o $@
-
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 run: $(NAME)
 	./$(NAME)

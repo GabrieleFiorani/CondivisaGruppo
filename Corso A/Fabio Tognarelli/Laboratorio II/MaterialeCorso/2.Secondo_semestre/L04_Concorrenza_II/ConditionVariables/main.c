@@ -15,6 +15,7 @@ cnd_t lista_vuota;
 cnd_t lista_piena;
 lista_t lista;
 
+//* cosa fa il produttore
 int produttore(void * arg){
 	int produzioni = 0;
 	do {
@@ -24,10 +25,12 @@ int produttore(void * arg){
 				printf("Produttore %lu\n", thrd_current()); 
 			#endif
 
+			// se la lista non e' ancora piena (traking fatto grazie ai valori della struct della lista)
 			if (lista.numero_elementi < lista.capienza_massima)
 			{
 				push(&lista, produzioni);
 				produzioni++;
+				//sveglia i consumatori se la lista era vuota
 				if (lista.numero_elementi == 1){
 					cnd_broadcast(&lista_vuota);
 				}
@@ -54,6 +57,7 @@ int produttore(void * arg){
 	return thrd_success;
 }
 
+//* cosa fa il consumatore
 int consumatore (void * arg){
 	int consumazioni = 0;
 	do {
@@ -66,6 +70,7 @@ int consumatore (void * arg){
 			if (lista.numero_elementi > 0) {
 				int item = pop(&lista);
 				consumazioni++;
+				//se c'è uno spazio libero in lista sveglia i produttori
 				if (lista.numero_elementi == (lista.capienza_massima - 1)){
 					cnd_broadcast(&lista_piena);
 				}
@@ -91,12 +96,14 @@ int consumatore (void * arg){
 	return thrd_success;
 }
 
+//* inizializza il mutex correttamente
 void inizializza_mutex(mtx_t *mutex){
 	if (mtx_init(mutex, mtx_plain) != thrd_success) {
 		fprintf(stderr, "Errore inizializzazione mutex.\n");
 		exit(1);
 	}
 }
+
 
 void distruggi_mutex(mtx_t *mutex){
 	mtx_destroy(mutex);
@@ -114,22 +121,27 @@ void distruggi_cnt(cnd_t *cond){
 }
 
 int main(){
+	//*array di thread di produttori / consumatori
 	thrd_t produttori[NUMERO_PRODUTTORI];
 	thrd_t consumatori[NUMERO_CONSUMATORI];
+
 
 	inizializa_lista(&lista, SLOT_LISTA);
 	inizializza_mutex(&mutex);
 	inizializza_cnt(&lista_vuota);
 	inizializza_cnt(&lista_piena);
 
+	//* creazione dei thread produttori
 	for (int i = 0; i < NUMERO_PRODUTTORI; i++) {
 		thrd_create(&produttori[i], produttore, NULL);
 	}
 
+	//* creazione dei thread consumatori
 	for (int i = 0; i < NUMERO_CONSUMATORI; i++) {
 		thrd_create(&consumatori[i], consumatore, NULL);
 	}
 
+	//* join su produttori e su consumatori
 	for (int i = 0; i < NUMERO_PRODUTTORI; i++) {
 		thrd_join(produttori[i], NULL);
 	}

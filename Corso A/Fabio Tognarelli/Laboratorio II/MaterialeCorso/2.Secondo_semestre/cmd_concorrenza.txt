@@ -1,0 +1,35 @@
+
+<thraeds.h>         //lib per i threads
+    thrd_create():          crea un thread
+    thrd_current():         restituisce l'ID di un thread
+    thrd_join(thread_id):   impedisce al thread padre di terminare prima del trhread specificato
+    thrd_sleep():           mette a dormire un thread per un periodo di tempo da specificare
+    thrd_detach(thread_id): imposta un thread in modalità detach
+
+<stdatomic.h>       
+    atomic_int a = 0:       crea un avariabile atomica intera
+    atomic_fetch_add/sub(valotile A* object, M operand):   fanno somma/sottr. atomica di una var. atomica
+    atomic_fetch_load/store:    leggono/scrivono le variabili in modo atomico
+-----------------------------
+SPINLOCK
+    atomic_flag lock = ATOMIC_FLAG_INIT: inizializza un lock in stato di default (lock libero) 
+
+    void spinlock(){ while (atomic_flag_test_and_set(&lock)); }
+        - È la funzione per acquisire il blocco. Chiama questa funzione chi vuole entrare nella sezione critica.
+        - Legge lo stato attuale della variabile lock; La imposta immediatamente a "true" (occupato); Restituisce il valore che la variabile aveva prima di essere impostata a "true". In questo modo, se il lock era sbloccato, da false ed esce dal while, altrimenti avrebbe preso il true e il thread in questione sarebbe rimasto a girare nel while(true) della spinlock finchè il lock non si fosse sbloccato
+    
+    void spinunlock(){ atomic_flag_clear(&lock); }: Rilascia il lock, permettendo agli altri di entrare.
+---------------------------------------
+CONDITION VARIABLES E MUTEX
+    mtx_t mtx;		//*VARIABILE DI MUTEX: chiave per accedere a sezione critica
+    cnd_t cnd;		//*CONDITION VARIABLE PER IL MUTEX: addormenta i thread
+
+    mtx_lock(&mtx):             //aquisisce il mutex
+	mtx_unlock(&mtx);			//rilascia il mutex
+
+    mtx_init(&mtx, mtx_plain);  //inizializza nel main mutex e cond var
+	cnd_init(&cnd);
+    cnd_destroy(&cnd);          //distrugge mutex e cond var
+	mtx_destroy(&mtx);
+
+        

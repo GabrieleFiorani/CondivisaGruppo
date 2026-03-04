@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -pedantic -std=c11
-NAME = main
+NAME = prova
 LIBS = -lpthread
 OBJS = $(NAME).o 
 

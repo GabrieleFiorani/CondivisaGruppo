@@ -1,8 +1,10 @@
+//* struttura di un nodo della lista
 typedef struct nodo_lista {
 	int value;
 	struct nodo_lista *prossimo;
 } nodo_lista_t;
 
+//*struttura di una lista
 typedef struct lista {
 	nodo_lista_t *head;
 	nodo_lista_t *tail;

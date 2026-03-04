@@ -1,8 +1,17 @@
 #include <stdio.h>
 #include <threads.h>
+/**
+ * *Le atomic variables sono utili per poter fare operazioni atomiche tra dati 
+ * *condivisi nei thread.
+ * *Sostanzialmente, rendono le OPERAZIONI ATOMICHE, evitando che queste operazioni 
+ * *vengano fatte da più thread contemporaneamente e portino a potenziali errori di fun=
+ * *zionamento
+ */
+
 #include <stdbool.h>
 #include <stdatomic.h>
 #include <stdlib.h>
+//#define BARRIER
 
 atomic_int thread_attivi = 0;
 
@@ -18,7 +27,7 @@ int thread_func(void *arg)
 		{ .tv_sec = tempo_rnd, .tv_nsec = 0 };	// imposta il tempo di attesa
 	thrd_sleep(&ts, NULL);						// attende il tempo impostato
 	printf("Fine Thread: %d\n", id);			// stampa la fine del thread
-	atomic_fetch_sub(&thread_attivi, 1);
+	atomic_fetch_sub(&thread_attivi, 1);		//riduce il n. di thread in modo atomico
 	return 0;
 }
 
@@ -37,7 +46,7 @@ int main()
 			&thread_ids[i]	// argomento della funzione
 		);
 
-		atomic_fetch_add(&thread_attivi, 1);
+		atomic_fetch_add(&thread_attivi, 1);	//aumente il n. thread in modo atomico
 
 		thrd_detach(threads[i]);	// imposta il thread i come detached
 									// il thread non deve essere esplicitamente 
@@ -47,6 +56,7 @@ int main()
 
 	for (int i = 0; i < N; i++)
 	{
+		//! join non funzionante poichè thread messi in mod. detach
 		int ret = thrd_join(threads[i], NULL);	// attende la terminazione del thread i
 		if (ret == thrd_success) {				// verifica il risultato del join
 			printf("Thread %d terminato correttamente.\n", i); 	
@@ -55,6 +65,7 @@ int main()
 		}
 	}
 
+	//* in questa maniera si forza il thread main a restare in esecuzione durante mentre i sottothread ancora non hanno terminato
 	#ifdef BARRIER
 		while (atomic_load(&thread_attivi) > 0)
 		{
