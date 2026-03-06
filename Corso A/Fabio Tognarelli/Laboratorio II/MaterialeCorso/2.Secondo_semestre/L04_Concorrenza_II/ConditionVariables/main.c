@@ -30,7 +30,7 @@ int produttore(void * arg){
 			{
 				push(&lista, produzioni);
 				produzioni++;
-				//sveglia i consumatori se la lista era vuota
+				//sveglia i consumatori se prima dell'inserimento la lista era vuota
 				if (lista.numero_elementi == 1){
 					cnd_broadcast(&lista_vuota);
 				}
